@@ -1,0 +1,9 @@
+{
+    "builds": [
+      {
+        "src": "examples/full/package.json",
+        "use": "@vercel/next",
+        "config": { "rootDirectory": "examples/full" }
+      }
+    ]
+  }
