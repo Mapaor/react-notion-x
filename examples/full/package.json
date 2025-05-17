@@ -12,6 +12,7 @@
     "test:lint": "eslint ."
   },
   "dependencies": {
+    "@fisch0920/use-dark-mode": "^2.4.0",
     "@notionhq/client": "^2.3.0",
     "classnames": "^2.5.1",
     "ky": "^1.7.5",

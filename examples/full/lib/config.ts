@@ -1,24 +1,77 @@
-// TODO: change these to your own values
-// NOTE: rootNotionSpaceId is optional; set it to undefined if you don't want to
-// use it.
-export const rootNotionPageId = '7cb6d7131580452388217edcf8f621c3'
-export const rootNotionSpaceId = undefined
+import { parsePageId } from 'notion-utils'
 
-// NOTE: having this enabled can be pretty expensive as it re-generates preview
-// images each time a page is built. In a production setting, we recommend that
-// you cache the preview image results in a key-value database.
-export const previewImagesEnabled = true
+import type { NavigationLink, NavigationStyle, Site } from './types'
+import { getSiteConfig } from './get-config-value'
 
-// Whether to use the official public Notion API or the unofficial private API.
-// Note that the official API doesn't expose formatting options for many blocks
-// and is currently not as well-supported.
-// If you want to use the official API, you must provide a NOTION_TOKEN env var.
-export const useOfficialNotionAPI =
-  false ||
-  (process.env.USE_OFFICIAL_NOTION_API === 'true' && process.env.NOTION_TOKEN)
+export const rootNotionPageId: string = parsePageId(
+  getSiteConfig('rootNotionPageId'),
+  { uuid: false }
+)
+if (!rootNotionPageId) {
+  throw new Error('Config error: invalid "rootNotionPageId"')
+}
 
-export const isDev =
-  process.env.NODE_ENV === 'development' || !process.env.NODE_ENV
+export const rootNotionSpaceId: string | null = getSiteConfig(
+  'rootNotionSpaceId',
+  null
+)
 
-export const port = process.env.PORT || 3000
-export const rootDomain = isDev ? `localhost:${port}` : null
+export const name: string = getSiteConfig('name')
+export const author: string = getSiteConfig('author')
+export const domain: string = getSiteConfig('domain')
+export const description: string = getSiteConfig('description', 'Notion Blog')
+export const language: string = getSiteConfig('language', 'en')
+
+// Social media
+export const twitter: string | null = getSiteConfig('twitter', null)
+export const mastodon: string | null = getSiteConfig('mastodon', null)
+export const github: string | null = getSiteConfig('github', null)
+export const youtube: string | null = getSiteConfig('youtube', null)
+export const linkedin: string | null = getSiteConfig('linkedin', null)
+export const newsletter: string | null = getSiteConfig('newsletter', null)
+export const zhihu: string | null = getSiteConfig('zhihu', null)
+
+export const getMastodonHandle = (): string | null => {
+  if (!mastodon) return null
+  const url = new URL(mastodon)
+  return `${url.pathname.slice(1)}@${url.hostname}`
+}
+
+// Defaults for Notion appearance (optional)
+export const defaultPageIcon: string | null = getSiteConfig(
+  'defaultPageIcon',
+  null
+)
+export const defaultPageCover: string | null = getSiteConfig(
+  'defaultPageCover',
+  null
+)
+export const defaultPageCoverPosition: number = getSiteConfig(
+  'defaultPageCoverPosition',
+  0.5
+)
+
+// Preview images flag
+export const isPreviewImageSupportEnabled: boolean = getSiteConfig(
+  'isPreviewImageSupportEnabled',
+  false
+)
+
+// Navigation configuration
+export const navigationStyle: NavigationStyle = getSiteConfig(
+  'navigationStyle',
+  'default'
+)
+export const navigationLinks: Array<NavigationLink | null> = getSiteConfig(
+  'navigationLinks',
+  null
+)
+
+// Build a minimal Site object
+export const site: Site = {
+  domain,
+  name,
+  rootNotionPageId,
+  rootNotionSpaceId,
+  description
+}

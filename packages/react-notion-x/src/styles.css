@@ -1213,8 +1213,30 @@ svg.notion-page-icon {
   outline: none;
 }
 .notion-toggle > div {
-  margin-left: 1.1em;
+  margin-left: 2.0em; /* ABANS A 1.1em */
+  margin-top: 0.5em; /* NOU */
 }
+
+/* TOGGLE HEADINGS MÉS ESTÈTICS */
+
+
+.notion-toggle{
+  margin-top: 0.8em;
+}
+
+.notion-toggle .notion-h3{
+  padding-left: 8px;
+}
+
+.notion-toggle .notion-h2{
+  padding-left: 8px;
+}
+
+.notion-toggle .notion-h1{
+  padding-left: 8px;
+}
+
+/* FI DE MODIFICACIONS */
 
 .notion-collection {
   align-self: center;
@@ -2050,7 +2072,7 @@ svg.notion-page-icon {
   overflow: auto;
   width: 100%;
   max-width: 100%;
-  padding: 4px 8px;
+  padding: 8px 8px;
   margin: 4px 0;
   cursor: pointer;
 }
@@ -3082,3 +3104,96 @@ svg.notion-page-icon {
   font-size: 0.875rem;
   color: var(--fg-color-2);
 }
+
+/* NOUS (QUE AL CLICAR ES VEGI EL LATEX) */
+
+.equation {
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.notion-equation-block {
+  display: block;   
+  margin: 0 auto;   
+  padding: 10px 4px;   
+}
+
+.latex-code {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6; 
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  font-family: iawriter-mono, Nitti, Menlo, Courier, monospace;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+  /* Posicionament del popup */
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 80%;
+  max-height: 80vh;
+  z-index: 10;
+  cursor: text;
+}
+
+/* Highlighting classes */
+.latex-code .highlight-red {
+  color: #DD4A68;
+}
+.latex-code .highlight-blue {
+  color: #0077AA;
+}
+.latex-code .highlight-gray {
+  color: #999999;
+}
+
+/* MÉS ESPAI ENTRE HEADINGS */
+
+
+/* Títols normals que tenen un toggle pare */
+.notion-toggle > div .notion-h3 {
+  margin-top: 0.9em;
+  margin-bottom: 0.2em;
+  padding-left: 0em;
+  display: block;
+}
+
+.notion-toggle > div .notion-h2 {
+  margin-top: 0.9em;
+  margin-bottom: 0.2em;
+  padding-left: 0em;
+  display: block;
+}
+
+.notion-toggle > div .notion-h1 {
+  margin-top: 0.9em;
+  margin-bottom: 0.2em;
+  padding-left: 0em;
+  display: block;
+}
+
+/* Toggle  headdings */
+
+.notion-toggle > summary .notion-h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline-block;
+}
+
+.notion-toggle > summary .notion-h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline-block;
+}
+
+.notion-toggle > summary .notion-h1 {
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline-block;
+} 

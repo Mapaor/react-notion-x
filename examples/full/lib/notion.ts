@@ -1,40 +1,15 @@
-import { Client } from '@notionhq/client'
-import { NotionAPI } from 'notion-client'
-import { NotionCompatAPI } from 'notion-compat'
-import {
-  type ExtendedRecordMap,
-  type SearchParams,
-  type SearchResults
+import type {
+  ExtendedRecordMap,
+  SearchParams,
+  SearchResults
 } from 'notion-types'
 
-import { previewImagesEnabled, useOfficialNotionAPI } from './config'
-import { getPreviewImageMap } from './preview-images'
-
-const notion = useOfficialNotionAPI
-  ? new NotionCompatAPI(new Client({ auth: process.env.NOTION_TOKEN }))
-  : new NotionAPI()
-
-if (useOfficialNotionAPI) {
-  console.warn(
-    'Using the official Notion API. Note that many blocks only include partial support for formatting and layout. Use at your own risk.'
-  )
-}
+import { notion } from './notion-api'
 
 export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
-  const recordMap = await notion.getPage(pageId)
-
-  if (previewImagesEnabled) {
-    const previewImageMap = await getPreviewImageMap(recordMap)
-    ;(recordMap as any).preview_images = previewImageMap
-  }
-
-  return recordMap
+  return notion.getPage(pageId)
 }
 
 export async function search(params: SearchParams): Promise<SearchResults> {
-  if ('search' in notion) {
-    return notion.search(params)
-  } else {
-    throw new Error('Notion API does not support search')
-  }
+  return notion.search(params)
 }
