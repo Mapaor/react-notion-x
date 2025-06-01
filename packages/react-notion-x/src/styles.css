@@ -3110,14 +3110,13 @@ svg.notion-page-icon {
 .equation {
   position: relative;
   cursor: pointer;
-  width: 100%;
-  margin: 0 auto;
 }
 
 .notion-equation-block {
   display: block;   
   margin: 0 auto;   
-  padding: 10px 4px;   
+  padding: 10px 4px; 
+  width: 100%;
 }
 
 .latex-code {
@@ -3140,6 +3139,12 @@ svg.notion-page-icon {
   max-height: 80vh;
   z-index: 10;
   cursor: text;
+}
+
+.equation-inline {
+  display: inline-flex; /* Assegura que es comporti com inline */
+  align-items: center;
+  margin: 0; /* Elimina marges que puguin fer-la semblar un bloc */
 }
 
 /* Highlighting classes */

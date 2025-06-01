@@ -7,7 +7,6 @@
     "noEmit": true,
     "target": "es2020",
     "outDir": "build",
-
     "allowImportingTsExtensions": false,
     "allowJs": true,
     "esModuleInterop": true,
@@ -21,6 +20,10 @@
     "sourceMap": true,
     "strict": true,
     "useDefineForClassFields": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["examples/full/*"]
+    }
   }
 }

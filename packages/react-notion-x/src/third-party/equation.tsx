@@ -84,22 +84,29 @@ export function Equation({
   if (!computedMath) return null
 
   return (
-    <div className='equation' ref={containerRef}>
+    <div
+      className={cs(
+        'equation',
+        inline ? 'equation-inline' : 'equation-block',
+        className
+      )}
+      ref={containerRef}
+    >
       <span
         role='button'
         tabIndex={0}
         onClick={() => setShowLatex(!showLatex)}
         className={cs(
           'notion-equation',
-          inline ? 'notion-equation-inline' : 'notion-equation-block',
-          className
+          inline ? 'notion-equation-inline' : 'notion-equation-block'
         )}
       >
-        {inline ? (
-          <Katex math={computedMath} settings={katexSettings} {...rest} />
-        ) : (
-          <Katex math={computedMath} settings={katexSettings} {...rest} block />
-        )}
+        <Katex
+          math={computedMath}
+          settings={katexSettings}
+          {...rest}
+          block={!inline}
+        />
       </span>
       {showLatex && (
         <pre

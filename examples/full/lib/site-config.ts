@@ -1,22 +1,46 @@
-export function siteConfig<T>(config: T): T {
-  return config
-}
+import type * as types from './types'
 
-export type SiteConfig = {
+export interface SiteConfig {
   rootNotionPageId: string
+  rootNotionSpaceId?: string
+
   name: string
   domain: string
   author: string
-  description: string
-  twitter?: string | null
-  github?: string | null
-  linkedin?: string | null
+  description?: string
+  language?: string
+
+  twitter?: string
+  github?: string
+  linkedin?: string
+  newsletter?: string
+  youtube?: string
+  zhihu?: string
+  mastodon?: string
+
   defaultPageIcon?: string | null
   defaultPageCover?: string | null
-  defaultPageCoverPosition?: number
+  defaultPageCoverPosition?: number | null
+
   isPreviewImageSupportEnabled?: boolean
+  isTweetEmbedSupportEnabled?: boolean
   isRedisEnabled?: boolean
-  pageUrlOverrides?: any
-  navigationStyle?: 'default' | 'custom'
-  navigationLinks?: any
+  isSearchEnabled?: boolean
+
+  includeNotionIdInUrls?: boolean
+  pageUrlOverrides?: Record<string, string>
+  pageUrlAdditions?: Record<string, string>
+
+  navigationStyle?: types.NavigationStyle
+  navigationLinks?: Array<NavigationLink | null>
+}
+
+export interface NavigationLink {
+  title: string
+  pageId?: string
+  url?: string
+}
+
+export const siteConfig = (config: SiteConfig): SiteConfig => {
+  return config
 }

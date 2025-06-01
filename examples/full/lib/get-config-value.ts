@@ -1,11 +1,11 @@
-import type { SiteConfig } from './site-config'
 import rawSiteConfig from '../site.config'
+import { type SiteConfig } from './site-config'
 
 if (!rawSiteConfig) {
   throw new Error(`Config error: invalid site.config.ts`)
 }
 
-// Si no hi ha sobreescriptures, podem usar un objecte buit
+// Permet que variables d’entorn sobreescriguin site.config.ts
 let siteConfigOverrides: SiteConfig = {} as SiteConfig
 
 try {
@@ -17,19 +17,34 @@ try {
   throw err
 }
 
-const navigationStyle =
-  siteConfigOverrides.navigationStyle ?? rawSiteConfig.navigationStyle
-
 const siteConfig: SiteConfig = {
   ...rawSiteConfig,
-  ...siteConfigOverrides,
-  navigationStyle: navigationStyle === 'custom' ? 'custom' : 'default'
+  ...siteConfigOverrides
 }
 
 export function getSiteConfig<T>(key: string, defaultValue?: T): T {
-  const value = siteConfig[key]
+  // fem servir el key com a property del SiteConfig
+  const value = siteConfig[key as keyof SiteConfig]
+  if (value !== undefined) {
+    return value as T
+  }
+  if (defaultValue !== undefined) {
+    return defaultValue
+  }
+  throw new Error(`Config error: missing required site config value "${key}"`)
+}
+
+export function getEnv(
+  key: string,
+  defaultValue?: string,
+  env = process.env
+): string {
+  const value = env[key]
   if (value !== undefined) {
     return value
   }
-  return defaultValue as T
+  if (defaultValue !== undefined) {
+    return defaultValue
+  }
+  throw new Error(`Config error: missing required env variable "${key}"`)
 }
