@@ -1,52 +1,70 @@
 import Head from 'next/head'
 import * as React from 'react'
 
-import type * as types from '@/lib/types'
+// import type * as types from '@/lib/types'
 import * as config from '@/lib/config'
-import { getSocialImageUrl } from '@/lib/get-social-image-url'
+// import { getSocialImageUrl } from '@/lib/get-social-image-url'
 
-export function PageHead(
-  props: types.PageProps & {
-    title?: string
-    description?: string
-    image?: string
-    url?: string
-  }
-) {
-  const {
-    site,
-    title: propTitle,
-    description: propDescription,
-    pageId,
-    image,
-    url
-  } = props
-  const rssFeedUrl = `${config.host}/feed`
+export function PageHead(props: {
+  title?: string
+  description?: string
+  image?: string
+  url?: string
+}) {
+  const { title: propTitle, description: propDescription, image, url } = props
 
-  // Defineix títol i descripció amb fallback al site
-  const title = propTitle || site?.name || ''
-  const description = propDescription || site?.description || ''
-
-  // Obté la social image: prioritza la generada o la passada com a paràmetre
-  const socialImageUrl = getSocialImageUrl(pageId) || image || ''
+  const title = propTitle || 'Default Title'
+  const description = propDescription || 'Default Description'
 
   return (
-    // eslint-disable-next-line react/no-children-prop
-    <Head children={''}>
+    <Head>
+      {/* Metadades bàsiques */}
       <meta charSet='utf-8' />
-      <meta name='viewport' content='width=device-width, initial-scale=1' />
-      <title>{title}</title>
+      <meta httpEquiv='Content-Type' content='text/html; charset=utf-8' />
+      <meta
+        name='viewport'
+        content='width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover'
+      />
+      <meta name='mobile-web-app-capable' content='yes' />
+      <meta name='apple-mobile-web-app-status-bar-style' content='black' />
+      <meta
+        name='theme-color'
+        media='(prefers-color-scheme: light)'
+        content='#fefffe'
+        key='theme-color-light'
+      />
 
-      {description && <meta name='description' content={description} />}
-      {socialImageUrl && <meta property='og:image' content={socialImageUrl} />}
-      {url && <link rel='canonical' href={url} />}
+      {/* Robots i SEO */}
+      <meta name='robots' content='index,follow' />
+      <meta property='og:type' content='website' />
+      <meta property='og:title' content={title} />
+      <meta name='description' content={description} />
+      <meta property='og:description' content={description} />
 
+      {/* Canonical URL */}
+      {url && (
+        <>
+          <link rel='canonical' href={url} />
+          <meta property='og:url' content={url} />
+        </>
+      )}
+
+      {/* Site name */}
+      {/* {site?.name && <meta property="og:site_name" content={site.name} />} */}
+
+      {/* Social image */}
+      {image && <meta property='og:image' content={image} />}
+
+      {/* RSS Feed */}
       <link
         rel='alternate'
         type='application/rss+xml'
-        href={rssFeedUrl}
-        title={site?.name || ''}
+        href={`${config.host}/feed`}
+        // title={site?.name || ''}
       />
+
+      {/* Títol de la pàgina */}
+      <title>{title}</title>
     </Head>
   )
 }

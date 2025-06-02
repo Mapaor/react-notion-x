@@ -20,3 +20,9 @@
   height: 24px;
   color: rgba(55, 53, 47, 0.4);
 }
+
+/*  De moment amaguem el header */
+
+.capcaleraTemporal{
+  display: none !important;
+}

@@ -19,12 +19,12 @@ import * as React from 'react'
 // Importa el Header des del paquet react-notion-x
 import { Header } from 'react-notion-x'
 
-// import { bootstrap } from '@/lib/bootstrap-client'
-// import { isServer } from '@/lib/config'
+import { bootstrap } from '@/lib/bootstrap-client'
+import { isServer } from '@/lib/config'
 
-// if (!isServer) {
-//   bootstrap()
-// }
+if (!isServer) {
+  bootstrap()
+}
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()

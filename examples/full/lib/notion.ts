@@ -49,7 +49,7 @@ export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
 
   try {
     recordMap = await notion.getPage(pageId)
-    console.log(`Dades obtingudes per a pageId: ${pageId}`, recordMap)
+    console.log(`Dades obtingudes per a pageId: ${pageId}`)
   } catch (err) {
     console.error(`Error fetching page data for pageId: ${pageId}`, err)
     throw new Error(`Error fetching page data for pageId: ${pageId}`)

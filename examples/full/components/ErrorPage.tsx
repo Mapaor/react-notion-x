@@ -6,17 +6,7 @@ export function ErrorPage({ statusCode }: { statusCode: number }) {
 
   return (
     <>
-      <PageHead
-        title={title}
-        site={{
-          domain: '',
-          name: '',
-          rootNotionPageId: '',
-          rootNotionSpaceId: '',
-          description: ''
-        }}
-        pageId={'error'}
-      />
+      <PageHead title={title} />
 
       <div className={styles.container}>
         <main className={styles.main}>

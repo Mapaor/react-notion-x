@@ -14,12 +14,14 @@
   "dependencies": {
     "@fisch0920/use-dark-mode": "^2.4.0",
     "@notionhq/client": "^2.3.0",
+    "@keyvhq/core": "^1.6.9",
+    "@keyvhq/redis": "^1.6.10",
     "@react-icons/all-files": "^4.1.0",
     "classnames": "^2.5.1",
     "expiry-map": "^2.0.0",
     "isomorphic-unfetch": "^4.0.2",
     "ky": "^1.7.5",
-    "lqip-modern": "^2.1.0",
+    "lqip-modern": "^2.2.1",
     "next": "^15.2.3",
     "notion-client": "workspace:*",
     "notion-compat": "workspace:*",
@@ -29,11 +31,20 @@
     "p-memoize": "^7.1.1",
     "prismjs": "^1.30.0",
     "react": "^19.0.0",
+    "react-body-classname": "^1.3.1",
     "react-dom": "^19.0.0",
     "react-notion-x": "workspace:*",
+    "react-use": "^17.4.2",
     "rss": "^1.2.2"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.0.2",
+    "@types/react": "^18.0.21",
     "cross-env": "^7.0.3"
+  },
+  "overrides": {
+    "cacheable-request": {
+      "keyv": "npm:@keyvhq/core@~1.6.6"
+    }
   }
 }

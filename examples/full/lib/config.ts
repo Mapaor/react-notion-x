@@ -8,23 +8,39 @@ import { parsePageId } from 'notion-utils'
 
 import { getEnv, getSiteConfig } from './get-config-value'
 import { type NavigationLink } from './site-config'
-import { type NavigationStyle, type Site } from './types'
+import {
+  type NavigationStyle,
+  type PageUrlOverridesInverseMap,
+  type PageUrlOverridesMap,
+  type Site
+} from './types'
 
 export const rootNotionPageId: string = parsePageId(
   getSiteConfig('rootNotionPageId'),
-  { uuid: false }
+  { uuid: false } // No volem slugified IDs per les pagines
 )
-console.log(`Root Notion Page ID: ${rootNotionPageId}`)
+
 if (!rootNotionPageId) {
-  console.error('Error: rootNotionPageId no està configurat correctament')
   throw new Error('Config error: invalid "rootNotionPageId"')
 }
 
 // Si vols restringir les pàgines a un sol espai de treball Notion (opcional)
 export const rootNotionSpaceId: string | null = parsePageId(
   getSiteConfig('rootNotionSpaceId', null),
-  { uuid: true }
+  { uuid: false } // No volem slugified IDs per les pàgines
 )
+
+export const pageUrlOverrides = cleanPageUrlMap(
+  getSiteConfig('pageUrlOverrides', {}) || {},
+  { label: 'pageUrlOverrides' }
+)
+
+export const pageUrlAdditions = cleanPageUrlMap(
+  getSiteConfig('pageUrlAdditions', {}) || {},
+  { label: 'pageUrlAdditions' }
+)
+
+export const inversePageUrlOverrides = invertPageUrlOverrides(pageUrlOverrides)
 
 export const environment = process.env.NODE_ENV || 'development'
 export const isDev = environment === 'development'
@@ -73,10 +89,11 @@ export const isPreviewImageSupportEnabled: boolean = getSiteConfig(
 )
 
 // Opcional: indicar si s'ha d'incloure l'ID Notion a les URLs de pàgina
-export const includeNotionIdInUrls: boolean = getSiteConfig(
-  'includeNotionIdInUrls',
-  !!isDev
-)
+// export const includeNotionIdInUrls: boolean = getSiteConfig(
+//   'includeNotionIdInUrls',
+//   !!isDev
+// )
+export const includeNotionIdInUrls = false // Desactivem slugified URLs
 
 export const navigationStyle: NavigationStyle = getSiteConfig(
   'navigationStyle',
@@ -129,17 +146,69 @@ export const site: Site = {
   description
 }
 
-export const fathomId = isDev ? null : process.env.NEXT_PUBLIC_FATHOM_ID
-export const fathomConfig = fathomId
-  ? { excludedDomains: ['localhost', 'localhost:3000'] }
-  : undefined
+// export const fathomId = isDev ? null : process.env.NEXT_PUBLIC_FATHOM_ID
+// export const fathomConfig = fathomId
+//   ? { excludedDomains: ['localhost', 'localhost:3000'] }
+//   : undefined
 
-export const posthogId = process.env.NEXT_PUBLIC_POSTHOG_ID
-export const posthogConfig = {
-  api_host: 'https://app.posthog.com'
-}
+// export const posthogId = process.env.NEXT_PUBLIC_POSTHOG_ID
+// export const posthogConfig = {
+//   api_host: 'https://app.posthog.com'
+// }
 
 export const previewImagesEnabled: boolean = getSiteConfig(
   'previewImagesEnabled',
   false
+)
+
+function cleanPageUrlMap(
+  pageUrlMap: PageUrlOverridesMap,
+  {
+    label
+  }: {
+    label: string
+  }
+): PageUrlOverridesMap {
+  return Object.keys(pageUrlMap).reduce((acc, uri) => {
+    const pageId = pageUrlMap[uri]
+    const uuid = parsePageId(pageId, { uuid: false })
+
+    if (!uuid) {
+      throw new Error(`Invalid ${label} page id "${pageId}"`)
+    }
+
+    if (!uri) {
+      throw new Error(`Missing ${label} value for page "${pageId}"`)
+    }
+
+    if (!uri.startsWith('/')) {
+      throw new Error(
+        `Invalid ${label} value for page "${pageId}": value "${uri}" should be a relative URI that starts with "/"`
+      )
+    }
+
+    const path = uri.slice(1)
+
+    return {
+      ...acc,
+      [path]: uuid
+    }
+  }, {})
+}
+
+function invertPageUrlOverrides(
+  pageUrlOverrides: PageUrlOverridesMap
+): PageUrlOverridesInverseMap {
+  return Object.keys(pageUrlOverrides).reduce((acc, uri) => {
+    const pageId = pageUrlOverrides[uri]
+
+    return {
+      ...acc,
+      [pageId]: uri
+    }
+  }, {})
+}
+
+console.log(
+  `Config loaded: rootNotionPageId=${rootNotionPageId}, domain=${domain}`
 )

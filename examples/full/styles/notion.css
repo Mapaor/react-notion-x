@@ -18,7 +18,6 @@
     background-size: cover;
 } 
   /* però malauradament el dark-mode no queda ben configurat. */
-*/
 
 
 /* CANVIATS */
@@ -403,3 +402,10 @@
 .notion-equation.notion-equation-block{
   align-items: center;
 } */
+
+
+/* DE MOMENT AMAGUEM EL HEADER */
+
+:not(.notion-frame) > .notion-header {
+  display: none;
+}

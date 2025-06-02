@@ -13,12 +13,11 @@ import * as notion from '../lib/notion'
 
 export const getStaticProps = async (context) => {
   const pageId = context.params.pageId as string
-  console.log(`Fetching static props for pageId: ${pageId}`)
+  console.log(`Fetching static props for pageId=${context.params.pageId}`)
 
   let recordMap
   try {
     recordMap = await notion.getPage(pageId)
-    console.log(`Dades obtingudes per a pageId: ${pageId}`, recordMap)
   } catch (err) {
     console.error(`Error fetching page data for pageId: ${pageId}`, err)
     return {
@@ -31,17 +30,22 @@ export const getStaticProps = async (context) => {
     !recordMap.block ||
     Object.keys(recordMap.block).length === 0
   ) {
-    console.error(
-      `Error: No s'han trobat dades per a la pàgina amb ID ${pageId}`
-    )
+    console.error(`Error: No data found for pageId=${context.params.pageId}`)
     return {
       notFound: true
     }
+  } else {
+    console.log(
+      `RecordMap fetched successfully for pageId=${context.params.pageId}`
+    )
   }
 
   return {
     props: {
-      recordMap
+      recordMap,
+      rootDomain,
+      rootNotionPageId,
+      previewImagesEnabled
     },
     revalidate: 604_800 // Fem redeploy 1 cop a la setmana
   }
@@ -84,11 +88,13 @@ export async function getStaticPaths() {
 
 export default function Page({ recordMap }: { recordMap: ExtendedRecordMap }) {
   return (
-    <NotionPage
-      recordMap={recordMap}
-      rootDomain={rootDomain}
-      rootPageId={rootNotionPageId}
-      previewImagesEnabled={previewImagesEnabled}
-    />
+    <>
+      <NotionPage
+        recordMap={recordMap}
+        rootDomain={rootDomain}
+        rootPageId={rootNotionPageId}
+        previewImagesEnabled={previewImagesEnabled}
+      />
+    </>
   )
 }

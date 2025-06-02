@@ -1,19 +1,34 @@
+import cs from 'classnames'
 import dynamic from 'next/dynamic'
-import Head from 'next/head'
+import Image from 'next/legacy/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { type ExtendedRecordMap } from 'notion-types'
-import { getPageTitle } from 'notion-utils'
-import { NotionRenderer } from 'react-notion-x'
+import { type ExtendedRecordMap, type PageBlock } from 'notion-types'
+import { getBlockTitle, getPageProperty } from 'notion-utils'
+import * as React from 'react'
+import BodyClassName from 'react-body-classname'
+import { type NotionComponents, NotionRenderer } from 'react-notion-x'
+import { useSearchParam } from 'react-use'
 
+import type * as types from '@/lib/types'
+import * as config from '@/lib/config'
+import { mapImageUrl } from '@/lib/map-image-url'
+import { getCanonicalPageUrl } from '@/lib/map-page-url'
+import { useDarkMode } from '@/lib/use-dark-mode'
+
+// import { Footer } from './Footer'
 import { Loading } from './Loading'
+import { Page404 } from './Page404'
+import { PageHead } from './PageHead'
+import styles from './styles.module.css'
 
 // -----------------------------------------------------------------------------
 // dynamic imports for optional components
 // -----------------------------------------------------------------------------
+
 const Code = dynamic(() =>
   import('react-notion-x/build/third-party/code').then(async (m) => {
-    await Promise.all([
+    await Promise.allSettled([
       import('prismjs/components/prism-markup-templating.js'),
       import('prismjs/components/prism-markup.js'),
       import('prismjs/components/prism-bash.js'),
@@ -49,96 +64,118 @@ const Code = dynamic(() =>
     return m.Code
   })
 )
-const Equation = dynamic(() =>
-  import('react-notion-x/build/third-party/equation').then((m) => m.Equation)
-)
-const Pdf = dynamic(
-  () => import('react-notion-x/build/third-party/pdf').then((m) => m.Pdf),
-  { ssr: false }
-)
+
 const Collection = dynamic(() =>
   import('react-notion-x/build/third-party/collection').then(
     (m) => m.Collection
   )
 )
+const Equation = dynamic(() =>
+  import('react-notion-x/build/third-party/equation').then((m) => m.Equation)
+)
+const Pdf = dynamic(
+  () => import('react-notion-x/build/third-party/pdf').then((m) => m.Pdf),
+  {
+    ssr: false
+  }
+)
+
+// Add the requested type definition
+export type PageProps = {
+  recordMap: ExtendedRecordMap
+  rootDomain: string
+  rootNotionPageId: string
+  previewImagesEnabled: boolean
+}
 
 export function NotionPage({
   recordMap,
-  previewImagesEnabled,
   rootPageId,
   rootDomain
-}: {
-  recordMap: ExtendedRecordMap
-  previewImagesEnabled?: boolean
-  rootPageId?: string
-  rootDomain?: string
-}) {
+}: types.PageProps) {
   const router = useRouter()
+  const lite = useSearchParam('lite')
+
+  const components = React.useMemo<Partial<NotionComponents>>(
+    () => ({
+      nextLegacyImage: Image,
+      nextLink: Link,
+      Code,
+      Collection,
+      Equation,
+      Pdf
+    }),
+    []
+  )
+
+  const isLiteMode = lite === 'true'
+
+  const { isDarkMode } = useDarkMode()
+
+  const keys = Object.keys(recordMap?.block || {})
+  const block = recordMap?.block?.[keys[0]]?.value
 
   if (router.isFallback) {
     return <Loading />
   }
 
-  if (!recordMap) {
-    return null
+  if (!block) {
+    return (
+      <Page404
+        recordMap={undefined}
+        previewImagesEnabled={false}
+        rootPageId={''}
+        rootDomain={''}
+      />
+    )
   }
 
-  const title = getPageTitle(recordMap)
+  const title = getBlockTitle(block, recordMap) || 'Untitled'
 
-  if (typeof window !== 'undefined') {
-    const keys = Object.keys(recordMap?.block || {})
-    const block = recordMap?.block?.[keys[0]]?.value
-    const g = window as any
-    g.recordMap = recordMap
-    g.block = block
-  }
+  const canonicalPageUrl = !config.isDev
+    ? getCanonicalPageUrl(config.site, recordMap, rootDomain)(rootPageId)
+    : undefined
 
-  const socialDescription = 'React Notion X Demo'
-  const socialImage =
-    'https://react-notion-x-demo.transitivebullsh.it/social.jpg'
+  const socialImage = mapImageUrl(
+    getPageProperty<string>('Social Image', block, recordMap) ||
+      (block as PageBlock).format?.page_cover ||
+      config.defaultPageCover,
+    block
+  )
+
+  const socialDescription =
+    getPageProperty<string>('Description', block, recordMap) ||
+    config.description
 
   return (
     <>
-      <Head>
-        {socialDescription && (
-          <>
-            <meta name='description' content={socialDescription} />
-            <meta property='og:description' content={socialDescription} />
-            <meta name='twitter:description' content={socialDescription} />
-          </>
-        )}
+      <PageHead
+        title={title}
+        description={socialDescription}
+        image={socialImage}
+        url={canonicalPageUrl}
+      />
 
-        {socialImage ? (
-          <>
-            <meta name='twitter:card' content='summary_large_image' />
-            <meta name='twitter:image' content={socialImage} />
-            <meta property='og:image' content={socialImage} />
-          </>
-        ) : (
-          <meta name='twitter:card' content='summary' />
-        )}
-
-        <title>{title}</title>
-        <meta property='og:title' content={title} />
-        <meta name='twitter:title' content={title} />
-        <meta name='twitter:creator' content='@transitive_bs' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
+      {isLiteMode && <BodyClassName className='notion-lite' />}
+      {isDarkMode && <BodyClassName className='dark-mode' />}
 
       <NotionRenderer
+        bodyClassName={cs(
+          styles.notion,
+          block?.id === rootPageId && 'index-page'
+        )}
+        darkMode={isDarkMode}
+        components={components}
         recordMap={recordMap}
-        fullPage={true}
-        darkMode={false}
-        rootDomain={rootDomain}
         rootPageId={rootPageId}
-        previewImages={previewImagesEnabled}
-        components={{
-          nextLink: Link,
-          Code,
-          Equation,
-          Pdf,
-          Collection
-        }}
+        rootDomain={rootDomain}
+        fullPage={!isLiteMode}
+        previewImages={!!recordMap.preview_images}
+        showCollectionViewDropdown={false}
+        defaultPageIcon={config.defaultPageIcon}
+        defaultPageCover={config.defaultPageCover}
+        defaultPageCoverPosition={config.defaultPageCoverPosition}
+        mapImageUrl={mapImageUrl}
       />
     </>
   )

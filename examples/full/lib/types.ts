@@ -12,10 +12,10 @@ export interface PageError {
 }
 
 export interface PageProps {
-  site?: Site
-  recordMap?: ExtendedRecordMap
-  pageId?: string
-  error?: PageError
+  recordMap: ExtendedRecordMap
+  previewImagesEnabled: boolean
+  rootPageId: string
+  rootDomain: string
 }
 
 export interface Params extends ParsedUrlQuery {
@@ -27,7 +27,7 @@ export interface Site {
   domain: string
 
   rootNotionPageId: string
-  rootNotionSpaceId: string
+  rootNotionSpaceId?: string
 
   // settings
   html?: string

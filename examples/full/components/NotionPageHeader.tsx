@@ -5,6 +5,9 @@ import { Breadcrumbs, Header, Search, useNotionContext } from 'react-notion-x'
 
 import { isSearchEnabled, navigationLinks, navigationStyle } from '@/lib/config'
 
+import styles from './styles.module.css'
+
+console.log('Rendering NotionPageHeader')
 export function NotionPageHeader({
   block
 }: {
@@ -17,11 +20,13 @@ export function NotionPageHeader({
     return <Header block={block} />
   }
 
+  console.log('Header classes:', cs('notion-header', styles.capcaleraTemporal))
+  console.log('CSS class:', styles.capcaleraTemporal)
   return (
-    <header className='notion-header'>
-      <div className='notion-nav-header'>
+    <header className={`${styles.notionHeader} ${styles.capcaleraTemporal}`}>
+      <div className={cs(styles.notionNavHeader, styles.capcaleraTemporal)}>
         <Breadcrumbs block={block} rootOnly={true} />
-        <div className='notion-nav-header-rhs'>
+        <div className={styles.notionNavHeaderRhs}>
           {navigationLinks &&
             navigationLinks.map((link, index) => {
               if (!link) return null
@@ -31,7 +36,7 @@ export function NotionPageHeader({
                   <components.PageLink
                     href={mapPageUrl(link.pageId)}
                     key={index}
-                    className={cs('navLink')}
+                    className={styles.navLink}
                   >
                     {link.title}
                   </components.PageLink>
@@ -41,7 +46,7 @@ export function NotionPageHeader({
                   <components.Link
                     href={link.url}
                     key={index}
-                    className={cs('navLink')}
+                    className={styles.navLink}
                   >
                     {link.title}
                   </components.Link>

@@ -35,7 +35,6 @@ async function createPreviewImage(url: string): Promise<PreviewImage | null> {
   try {
     const body = await ky(url).arrayBuffer()
     const result = await lqip(body)
-    console.log('lqip', { originalUrl: url, ...result.metadata })
 
     return {
       originalWidth: result.metadata.originalWidth,

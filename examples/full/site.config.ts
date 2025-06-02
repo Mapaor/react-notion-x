@@ -2,13 +2,14 @@ import { siteConfig } from './lib/site-config'
 
 export default siteConfig({
   // Required: The site's root Notion page ID
-  rootNotionPageId: '8bd15a8ab05741838e4f142ce7f9292e',
+  rootNotionPageId: '8bd15a8ab05741838e4f142ce7f9292e', // Aram Molins (canviar-ho dp)
 
   // Basic site info
   name: 'Física UB Website',
-  domain: 'static-website',
+  domain: 'localhost',
   author: 'Martí',
-  description: 'Example Next.js Notion Starter Kit Site',
+  description:
+    'Web col·laborativa de Física UB. Aquesta és una web estàtica generada a partir de fisicaubwiki.notion.site mitjançant react-notion-x',
 
   // Social usernames (if empty, they’re ignored)
   twitter: '',
@@ -21,7 +22,7 @@ export default siteConfig({
   defaultPageCoverPosition: 0.5,
 
   // Preview images support flag
-  isPreviewImageSupportEnabled: true,
+  isPreviewImageSupportEnabled: false,
   isRedisEnabled: false,
 
   // Navigation configuration
