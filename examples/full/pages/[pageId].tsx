@@ -47,7 +47,7 @@ export const getStaticProps = async (context) => {
       rootNotionPageId,
       previewImagesEnabled
     },
-    revalidate: 3600 // Fem rebuild cada 1h, el temps que duren les signed URLs de Notion (per PDFs i altres arxius)
+    revalidate: 3600 // Fem rebuild estàtic cada 1h, el temps que duren les signed URLs de Notion (per PDFs i altres arxius)
   }
 }
 

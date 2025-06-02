@@ -30,7 +30,7 @@ export const getStaticProps = async () => {
     props: {
       recordMap
     },
-    revalidate: 3600 // Fem redeploy cada 1h
+    revalidate: 3600 // Fem rebuild estàtic cada 1h
   }
 }
 
