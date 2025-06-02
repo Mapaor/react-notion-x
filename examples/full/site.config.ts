@@ -2,7 +2,8 @@ import { siteConfig } from './lib/site-config'
 
 export default siteConfig({
   // Required: The site's root Notion page ID
-  rootNotionPageId: '8bd15a8ab05741838e4f142ce7f9292e', // Aram Molins (canviar-ho dp)
+  rootNotionPageId: '7cb6d7131580452388217edcf8f621c3', // Física UB Wikiblog real
+  // '8bd15a8ab05741838e4f142ce7f9292e', // Aram Molins
 
   // Basic site info
   name: 'Física UB Website',
